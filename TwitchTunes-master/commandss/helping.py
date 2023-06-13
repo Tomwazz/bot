@@ -53,8 +53,22 @@ class Help(commands.Cog):
             await ctx.send(f"Wanna add some music? | Usage: {channel_prefix}sr title/link | This command adds a song to the queue | aliases → sr, addsong, ns")
         elif command_name == "q":
             await ctx.send(f"What is gonna play now? | Usage: {channel_prefix}q | This command sends list of 5 earliest songs in queue | aliases → queue")
+        elif command_name == "google":
+            await ctx.send(f"Am I google??? | Usage: {channel_prefix}google question/word_s | This command helps you google sum. You lazy....  SoonerLater")
+        elif command_name == "7tv":
+            await ctx.send(f"Wanna sum 7tv emote? | Usage: {channel_prefix}7tv emote | This command provides you 7tv search of emotes")
+        elif command_name == "trivia":
+            await ctx.send(f"Who is smarter? | Usage: {channel_prefix}trivia | This command sends one trivia question and you have 15 seconds for answering and checking afterwards")
+        elif command_name == "math":
+            await ctx.send(f"OMG 🤓 | Usage: {channel_prefix}math | This command sends sum math. But now there is only 3 seconds left 😱")
         elif command_name == "moreinfo":
             await ctx.send(f"WhAt AmI?' | Usage: {channel_prefix}moreinfo | This command gives basic info about the bot and its creators")
+        elif command_name == "crpl":
+            await ctx.send(f"You can create me something 😲 | Usage: {channel_prefix}crpl name_of_playlist | Now you can create your own playlist for me ;)")
+        elif command_name == "addtopl":
+            await ctx.send(f"But there's still nothing... | Usage: {channel_prefix}addtopl PLAYLIST_NAME SONG_URL | firstly check {channel_prefix}playlists if there is some playlist already. And then you can use it's name and add some music PagMan . Otherwise use {channel_prefix}crpl and then use this command.")
+        elif command_name == "playlists":
+            await ctx.send(f"List of fan mades 😋 | Usage: {channel_prefix}playlists | This command sends you created playlists using {channel_prefix}crpl with it's creator...")
         else:
             await ctx.send("Command not found.")
 

@@ -1,11 +1,13 @@
 import copy
 import datetime
 import json
+import random
 import logging
 
 import os
 import sys
 from discord.ext import commands
+from py_mini_racer import MiniRacer
 from commandss.prefix import get_prefix, change_prefix
 
 from rich.logging import RichHandler
@@ -151,17 +153,17 @@ with open('nicknames.json', 'r') as file:
 
 dotenv.load_dotenv()
 
-
 sp = spotipy.Spotify(
     auth_manager=SpotifyOAuth(
         client_id=os.environ.get("spotify_client_id"),
         client_secret=os.environ.get("spotify_secret"),
         redirect_uri="http://localhost:8080",
         scope=[
+            "playlist-modify-private",
             "user-modify-playback-state",
             "user-read-currently-playing",
             "user-read-playback-state",
-            "user-read-recently-played",
+            "user-read-recently-played"
         ],
     )
 )
@@ -177,7 +179,23 @@ def read_json(filename):
 
 def write_json(data, filename):
     with open(f"{filename}.json", "w") as file:
-        json.dump(data, file, indent=4)   
+        json.dump(data, file, indent=4)
+
+def read_playlist_data():
+    if os.path.exists("playlists.json"):
+        with open("playlists.json", "r") as file:
+            try:
+                return json.load(file)
+            except json.decoder.JSONDecodeError:
+                return {}
+    else:
+        return {}
+
+# Helper function to write the playlist data to the JSON file
+def write_playlist_data(data):
+    with open("playlists.json", "w") as file:
+        json.dump(data, file, indent=4)
+
 
 class Bot(commands.Bot):
     def __init__(self):
@@ -188,7 +206,6 @@ class Bot(commands.Bot):
             prefix=get_prefix,
             initial_channels=config["channels"],
         )  
-
         self.queue = []
         self.queue2 = []
         self.position_counter = 0
@@ -206,8 +223,11 @@ class Bot(commands.Bot):
         # Load the prefixes from the JSON file
         self.load_channel_prefixes()
 
+        
+        self.load_module("commandss.trivia")
+        self.load_module("commandss.math")
         self.load_module("commandss.ping")
-        self.load_module("commandss.afk")
+        self.load_module("afk")
         self.load_module("commandss.commands")
         self.load_module("commandss.moreinfo")
         self.load_module("commandss.s3s")
@@ -227,7 +247,99 @@ class Bot(commands.Bot):
         self.load_module("commandss.nickname")
         self.load_module("commandss.number")
         self.load_module("commandss.bob")
+        self.load_module("commandss.adding")
+        self.load_module("commandss.math2")
+        self.load_module("commandss.me")
+        self.load_module("commandss.remind")
+        self.load_module("commandss.timer")
+        self.load_module("commandss.definice")
 
+    @commands.command(name="create_playlist", aliases=["crpl"])
+    async def create_playlist_command(self, ctx, name):
+        sp = spotipy.Spotify(
+            auth_manager=SpotifyOAuth(
+                client_id=os.environ.get("spotify_client_id"),
+                client_secret=os.environ.get("spotify_secret"),
+                redirect_uri="http://localhost:8080",
+                scope=[
+                "playlist-modify-private",
+                "playlist-modify-public",
+                "user-library-read",
+            ],
+        )
+    )
+
+    # Create the playlist
+        user_id = sp.me()["id"]  # Get the user ID of the authorized user
+        playlist = sp.user_playlist_create(user_id, name, public=False)
+
+        # Extract the playlist ID
+        playlist_id = playlist["id"]
+
+    # Get the username of the person who added the playlist
+        added_by = ctx.author.name
+
+    # Read the existing playlist data from the JSON file
+        playlist_data = read_playlist_data()
+
+    # Add the playlist and the person who added it to the data
+        playlist_data[name] = {"id": playlist_id, "added_by": added_by}
+
+    # Write the updated playlist data to the JSON file
+        write_playlist_data(playlist_data)
+
+    # Provide the response to the user with the playlist ID
+        await ctx.send(f"Playlist '{name}' created with ID: {playlist_id}")
+
+
+    @commands.command(name="addtoplaylist", aliases=["addtopl"])
+    async def add_to_playlist_command(self, ctx, playlist_name, song_url):
+        sp = spotipy.Spotify(
+            auth_manager=SpotifyOAuth(
+                client_id=os.environ.get("spotify_client_id"),
+                client_secret=os.environ.get("spotify_secret"),
+                redirect_uri="http://localhost:8080",
+                scope=[
+                "playlist-modify-private",
+                "playlist-modify-public",
+                "user-library-read",
+            ],
+        )
+    )
+
+    # Read the playlist data from the JSON file
+        playlist_data = read_playlist_data()
+
+        playlist_found = False
+        playlist_id = None
+
+        for pname, pdata in playlist_data.items():
+            if pname.lower() == playlist_name.lower():
+                playlist_found = True
+                playlist_id = pdata["id"]
+                break
+
+    # Check if the playlist exists in the data
+        if playlist_found:
+        # Add the song to the playlist
+            sp.playlist_add_items(playlist_id, [song_url])
+
+        # Provide the response to the user
+            await ctx.send(f"Song added to the playlist '{playlist_name}'!")
+        else:
+            await ctx.send(f"Playlist '{playlist_name}' does not exist!")
+
+    @commands.command(name="playlists")
+    async def display_playlists_command(self, ctx):
+    # Read the playlist data from the JSON file
+            # Read the playlist data from the JSON file
+        playlist_data = read_playlist_data()
+
+        if playlist_data:
+            playlists = " | ".join([f"{index}. {name} (Added by: {data['added_by']})" for index, (name, data) in enumerate(playlist_data.items(), start=1)])
+            await ctx.send(f"Available playlists: {playlists}")
+        else:
+            await ctx.send("No playlists found.")
     """a    sync def event_message(self, message):
         if message.author.name == "reformedmartass":
             content = message.content.strip()
@@ -303,7 +415,7 @@ class Bot(commands.Bot):
         log.info(f"TwitchTunes ({self.version}) Ready, logged in as: {self.nick}")
 
     def is_owner(self, ctx):
-        return ctx.author.id == "640348450"
+        return ctx.author.name.lower() == "tomwaz"
 
     @commands.command(name='q', aliases=["queue"])
     async def q_command(self, ctx):
@@ -443,8 +555,7 @@ class Bot(commands.Bot):
 
     @commands.command(name="skip")
     async def skip_song_command(self, ctx):
-        self.allowed_users = ["tomwaz"]
-        if ctx.author.name in self.allowed_users:
+        if self.is_owner(ctx):
             sp.next_track()
             await ctx.send(f":) Skipping song...")
         else: 
@@ -452,8 +563,7 @@ class Bot(commands.Bot):
 
     @commands.command(name="previous", aliases=["back"])
     async def previous_song_command(self, ctx):
-        self.allowed_users = ["tomwaz"]
-        if ctx.author.name in self.allowed_users:
+        if self.is_owner(ctx):
             sp.previous_track()
             await ctx.send(f"Getting back... :)")
         else: 
@@ -482,22 +592,25 @@ class Bot(commands.Bot):
     @commands.command(name='volume')
     async def volume_command(self, ctx, volume: int):
     # Get the user's current playback information
-        playback = sp.current_playback()
+        if ctx.author.name.lower() == 'tomwaz':
+            playback = sp.current_playback()
 
     # Check if the user has an active playback
-        if playback is not None and playback['is_playing']:
+            if playback is not None and playback['is_playing']:
         # Get the active device
-            active_device = playback['device']
+                active_device = playback['device']
 
         # Check if the active device belongs to the user
-            if active_device['is_active'] and active_device['id'] == playback['device']['id']:
+                if active_device['is_active'] and active_device['id'] == playback['device']['id']:
             # Toggle the volume
-                sp.volume(volume, device_id=active_device['id'])
-                await ctx.send(f'Spotify volume set to: {volume}%')
+                    sp.volume(volume, device_id=active_device['id'])
+                    await ctx.send(f'Spotify volume set to: {volume}%')
+                else:
+                    await ctx.send('You do not have an active Spotify device.')
             else:
-                await ctx.send('You do not have an active Spotify device.')
+                await ctx.send('No active playback found.')
         else:
-            await ctx.send('No active playback found.')
+            await ctx.send("Don't ever try this again :)")
 
     # async def album_request(self, ctx, song):
     #     song = song.replace("spotify:album:", "")

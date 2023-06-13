@@ -3,7 +3,7 @@ from twitchio.ext import commands
 class SendSecretMessage(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.allowed_user = "omegalulingsomuch"
+        self.allowed_user = "tomwaz"
         self.secret_channel = "novejchannelwow"
 
     @commands.command(name="X")
@@ -19,4 +19,4 @@ class SendSecretMessage(commands.Cog):
         await channel.send(message)
 
 def prepare(bot):
-    bot.add_cog(SendSecretMessage(bot))
+    bot.add_cog(SendSecretMessage(bot)) 

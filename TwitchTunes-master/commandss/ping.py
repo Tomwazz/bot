@@ -33,7 +33,7 @@ class Ping(commands.Cog):
         channel_prefix = prefixes.get(channel_name, self.bot.default_prefix)  # Get the prefix for the current channel
 
         await ctx.send(
-            f"Spotify SR | other comm- | prefix: {channel_prefix}\n "
+            f"Spotify SR | {channel_prefix}commands | prefix: {channel_prefix}\n "
             f"| Channels: {channel_count} | use `{channel_prefix}help`"
         )
 

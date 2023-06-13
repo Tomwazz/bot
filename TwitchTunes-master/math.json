@@ -1,0 +1,412 @@
+{
+    "questions": [
+      {
+        "question": "34 + 57 =",
+        "answer": "91"
+      },
+      {
+        "question": "12 - 8 =",
+        "answer": "4"
+      },
+      {
+        "question": "65 * 3 =",
+        "answer": "195"
+      },
+      {
+        "question": "80 / 4 =",
+        "answer": "20"
+      },
+      {
+        "question": "23 + 45 =",
+        "answer": "68"
+      },
+      {
+        "question": "98 - 17 =",
+        "answer": "81"
+      },
+      {
+        "question": "50 * 2 =",
+        "answer": "100"
+      },
+      {
+        "question": "96 / 3 =",
+        "answer": "32"
+      },
+      {
+        "question": "17 + 33 =",
+        "answer": "50"
+      },
+      {
+        "question": "75 - 25 =",
+        "answer": "50"
+      },
+      {
+        "question": "12 * 8 =",
+        "answer": "96"
+      },
+      {
+        "question": "88 / 4 =",
+        "answer": "22"
+      },
+      {
+        "question": "63 + 9 =",
+        "answer": "72"
+      },
+      {
+        "question": "50 - 17 =",
+        "answer": "33"
+      },
+      {
+        "question": "9 * 9 =",
+        "answer": "81"
+      },
+      {
+        "question": "72 / 6 =",
+        "answer": "12"
+      },
+      {
+        "question": "25 + 63 =",
+        "answer": "88"
+      },
+      {
+        "question": "54 - 29 =",
+        "answer": "25"
+      },
+      {
+        "question": "10 * 10 =",
+        "answer": "100"
+      },
+      {
+        "question": "96 / 8 =",
+        "answer": "12"
+      },
+      {
+        "question": "37 + 23 =",
+        "answer": "60"
+      },
+      {
+        "question": "58 - 42 =",
+        "answer": "16"
+      },
+      {
+        "question": "9 * 7 =",
+        "answer": "63"
+      },
+      {
+        "question": "72 / 9 =",
+        "answer": "8"
+      },
+      {
+        "question": "51 + 18 =",
+        "answer": "69"
+      },
+      {
+        "question": "84 - 24 =",
+        "answer": "60"
+      },
+      {
+        "question": "6 * 6 =",
+        "answer": "36"
+      },
+      {
+        "question": "92 / 2 =",
+        "answer": "46"
+      },
+      {
+        "question": "63 + 37 =",
+        "answer": "100"
+      },
+      {
+        "question": "81 - 33 =",
+        "answer": "48"
+      },
+      {
+        "question": "16 + 5 =",
+        "answer": "21"
+      },
+      {
+        "question": "33 - 12 =",
+        "answer": "21"
+      },
+      {
+        "question": "8 * 4 =",
+        "answer": "32"
+      },
+      {
+        "question": "64 / 8 =",
+        "answer": "8"
+      },
+      {
+        "question": "17 + 8 =",
+        "answer": "25"
+      },
+      {
+        "question": "42 - 19 =",
+        "answer": "23"
+      },
+      {
+        "question": "6 * 7 =",
+        "answer": "42"
+      },
+      {
+        "question": "81 / 9 =",
+        "answer": "9"
+      },
+      {
+        "question": "23 + 12 =",
+        "answer": "35"
+      },
+      {
+        "question": "57 - 29 =",
+        "answer": "28"
+      },
+      {
+        "question": "9 * 6 =",
+        "answer": "54"
+      },
+      {
+        "question": "72 / 6 =",
+        "answer": "12"
+      },
+      {
+        "question": "28 + 15 =",
+        "answer": "43"
+      },
+      {
+        "question": "54 - 27 =",
+        "answer": "27"
+      },
+      {
+        "question": "4 * 9 =",
+        "answer": "36"
+      },
+      {
+        "question": "96 / 8 =",
+        "answer": "12"
+      },
+      {
+        "question": "37 + 18 =",
+        "answer": "55"
+      },
+      {
+        "question": "68 - 39 =",
+        "answer": "29"
+      },
+      {
+        "question": "7 * 8 =",
+        "answer": "56"
+      },
+      {
+        "question": "64 / 4 =",
+        "answer": "16"
+      },
+      {
+        "question": "39 + 21 =",
+        "answer": "60"
+      },
+      {
+        "question": "84 - 42 =",
+        "answer": "42"
+      },
+      {
+        "question": "9 * 5 =",
+        "answer": "45"
+      },
+      {
+        "question": "72 / 9 =",
+        "answer": "8"
+      },
+      {
+        "question": "44 + 19 =",
+        "answer": "63"
+      },
+      {
+        "question": "79 - 47 =",
+        "answer": "32"
+      },
+      {
+        "question": "8 * 6 =",
+        "answer": "48"
+      },
+      {
+        "question": "96 / 6 =",
+        "answer": "16"
+      },
+      {
+        "question": "27 + 18 =",
+        "answer": "45"
+      },
+      {
+        "question": "68 - 23 =",
+        "answer": "45"
+      },
+      {
+        "question": "15 + 9 =",
+        "answer": "24"
+      },
+      {
+        "question": "27 - 14 =",
+        "answer": "13"
+      },
+      {
+        "question": "4 * 6 =",
+        "answer": "24"
+      },
+      {
+        "question": "81 / 9 =",
+        "answer": "9"
+      },
+      {
+        "question": "38 + 62 =",
+        "answer": "100"
+      },
+      {
+        "question": "56 - 42 =",
+        "answer": "14"
+      },
+      {
+        "question": "9 * 8 =",
+        "answer": "72"
+      },
+      {
+        "question": "96 / 6 =",
+        "answer": "16"
+      },
+      {
+        "question": "22 + 37 =",
+        "answer": "59"
+      },
+      {
+        "question": "72 - 18 =",
+        "answer": "54"
+      },
+      {
+        "question": "5 * 7 =",
+        "answer": "35"
+      },
+      {
+        "question": "64 / 8 =",
+        "answer": "8"
+      },
+      {
+        "question": "14 + 9 =",
+        "answer": "23"
+      },
+      {
+        "question": "32 - 17 =",
+        "answer": "15"
+      },
+      {
+        "question": "6 * 5 =",
+        "answer": "30"
+      },
+      {
+        "question": "81 / 9 =",
+        "answer": "9"
+      },
+      {
+        "question": "27 + 8 =",
+        "answer": "35"
+      },
+      {
+        "question": "48 - 19 =",
+        "answer": "29"
+      },
+      {
+        "question": "7 * 6 =",
+        "answer": "42"
+      },
+      {
+        "question": "96 / 8 =",
+        "answer": "12"
+      },
+      {
+        "question": "17 + 11 =",
+        "answer": "28"
+      },
+      {
+        "question": "52 - 27 =",
+        "answer": "25"
+      },
+      {
+        "question": "8 * 7 =",
+        "answer": "56"
+      },
+      {
+        "question": "72 / 6 =",
+        "answer": "12"
+      },
+      {
+        "question": "33 + 14 =",
+        "answer": "47"
+      },
+      {
+        "question": "56 - 24 =",
+        "answer": "32"
+      },
+      {
+        "question": "9 * 4 =",
+        "answer": "36"
+      },
+      {
+        "question": "96 / 4 =",
+        "answer": "24"
+      },
+      {
+        "question": "27 + 19 =",
+        "answer": "46"
+      },
+      {
+        "question": "62 - 39 =",
+        "answer": "23"
+      },
+      {
+        "question": "6 * 8 =",
+        "answer": "48"
+      },
+      {
+        "question": "72 / 9 =",
+        "answer": "8"
+      },
+      {
+        "question": "47 + 17 =",
+        "answer": "64"
+      },
+      {
+        "question": "81 - 36 =",
+        "answer": "45"
+      },
+      {
+        "question": "9 * 6 =",
+        "answer": "54"
+      },
+      {
+        "question": "96 / 6 =",
+        "answer": "16"
+      },
+      {
+        "question": "32 + 15 =",
+        "answer": "47"
+      },
+      {
+        "question": "78 - 32 =",
+        "answer": "46"
+      },
+      {
+        "question": "8 * 9 =",
+        "answer": "72"
+      },
+      {
+        "question": "72 / 8 =",
+        "answer": "9"
+      },
+      {
+        "question": "44 + 21 =",
+        "answer": "65"
+      },
+      {
+        "question": "79 - 47 =",
+        "answer": "32"
+      }
+    ]
+  }
