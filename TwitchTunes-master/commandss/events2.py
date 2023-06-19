@@ -1,5 +1,6 @@
 from twitchio.ext import commands
 
+
 class Vanish(commands.Cog):
     def __init__(self, bot):
         self.bot = bot

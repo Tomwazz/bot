@@ -9,6 +9,7 @@ import sys
 from discord.ext import commands
 from py_mini_racer import MiniRacer
 from commandss.prefix import get_prefix, change_prefix
+from spotipy.oauth2 import SpotifyClientCredentials
 
 from rich.logging import RichHandler
 from twitchAPI.oauth import UserAuthenticator
@@ -163,7 +164,10 @@ sp = spotipy.Spotify(
             "user-modify-playback-state",
             "user-read-currently-playing",
             "user-read-playback-state",
-            "user-read-recently-played"
+            "user-read-recently-played",
+            "playlist-modify-private",
+            "playlist-modify-public",
+            "user-library-read",
         ],
     )
 )
@@ -223,8 +227,8 @@ class Bot(commands.Bot):
         # Load the prefixes from the JSON file
         self.load_channel_prefixes()
 
-        
-        self.load_module("commandss.trivia")
+        self.load_module("bday")
+        self.load_module("trivia")
         self.load_module("commandss.math")
         self.load_module("commandss.ping")
         self.load_module("afk")
@@ -250,25 +254,16 @@ class Bot(commands.Bot):
         self.load_module("commandss.adding")
         self.load_module("commandss.math2")
         self.load_module("commandss.me")
-        self.load_module("commandss.remind")
         self.load_module("commandss.timer")
         self.load_module("commandss.definice")
+        self.load_module("commandss.cookie")
+        self.load_module("commandss.spanek")
+        self.load_module("commandss.kappa")
+        self.load_module("commandss.remind")
+        self.load_module("rem")
 
     @commands.command(name="create_playlist", aliases=["crpl"])
     async def create_playlist_command(self, ctx, name):
-        sp = spotipy.Spotify(
-            auth_manager=SpotifyOAuth(
-                client_id=os.environ.get("spotify_client_id"),
-                client_secret=os.environ.get("spotify_secret"),
-                redirect_uri="http://localhost:8080",
-                scope=[
-                "playlist-modify-private",
-                "playlist-modify-public",
-                "user-library-read",
-            ],
-        )
-    )
-
     # Create the playlist
         user_id = sp.me()["id"]  # Get the user ID of the authorized user
         playlist = sp.user_playlist_create(user_id, name, public=False)
@@ -294,19 +289,6 @@ class Bot(commands.Bot):
 
     @commands.command(name="addtoplaylist", aliases=["addtopl"])
     async def add_to_playlist_command(self, ctx, playlist_name, song_url):
-        sp = spotipy.Spotify(
-            auth_manager=SpotifyOAuth(
-                client_id=os.environ.get("spotify_client_id"),
-                client_secret=os.environ.get("spotify_secret"),
-                redirect_uri="http://localhost:8080",
-                scope=[
-                "playlist-modify-private",
-                "playlist-modify-public",
-                "user-library-read",
-            ],
-        )
-    )
-
     # Read the playlist data from the JSON file
         playlist_data = read_playlist_data()
 
@@ -329,6 +311,30 @@ class Bot(commands.Bot):
         else:
             await ctx.send(f"Playlist '{playlist_name}' does not exist!")
 
+    @commands.command(name="remfrompl")
+    async def remove_from_playlist_command(self, ctx, playlist_name, song_url):
+    # Read the playlist data from the JSON file
+        playlist_data = read_playlist_data()
+
+        playlist_found = False
+        playlist_id = None
+
+        for pname, pdata in playlist_data.items():
+            if pname.lower() == playlist_name.lower():
+                playlist_found = True
+                playlist_id = pdata["id"]
+                break
+
+    # Check if the playlist exists in the data
+        if playlist_found:
+        # Remove the song from the playlist
+            sp.playlist_remove_all_occurrences_of_items(playlist_id, [song_url])
+
+        # Provide the response to the user
+            await ctx.send(f"Song removed from the playlist '{playlist_name}'!")
+        else:
+            await ctx.send(f"Playlist '{playlist_name}' does not exist!")
+
     @commands.command(name="playlists")
     async def display_playlists_command(self, ctx):
     # Read the playlist data from the JSON file
@@ -336,12 +342,76 @@ class Bot(commands.Bot):
         playlist_data = read_playlist_data()
 
         if playlist_data:
-            playlists = " | ".join([f"{index}. {name} (Added by: {data['added_by']})" for index, (name, data) in enumerate(playlist_data.items(), start=1)])
+            playlists = " | ".join([f"{index}. {name} (Added by: {data['added_by']}) | link: {data['link']}" for index, (name, data) in enumerate(playlist_data.items(), start=1)])
             await ctx.send(f"Available playlists: {playlists}")
         else:
             await ctx.send("No playlists found.")
-    """a    sync def event_message(self, message):
-        if message.author.name == "reformedmartass":
+
+    @commands.command(name='search')
+    async def search_songs(self, ctx, *, query):
+    # Search for songs based on the provided query
+        results = sp.search(q=query, type='track', limit=50)  # Increase the limit to fetch more results
+
+    # Extract the song details from the search results
+        songs = results['tracks']['items']
+        if songs:
+            response = f"Here are some songs related to '{query}':\n"
+            added_artists = set()  # Keep track of added artists
+            for song in songs:
+                artists = ', '.join([artist['name'] for artist in song['artists']])
+                if artists not in added_artists:  # Check if artist is already added
+                    response += f"| {song['name']} by {artists} |"
+                    added_artists.add(artists)  # Add artist to the set of added artists
+                if len(added_artists) == 5:  # Stop once you have 5 unique artists
+                    break
+        else:
+            response = f"No songs found for '{query}'."
+
+    # Send the response back to the chat
+        await ctx.send(response)
+
+    @commands.command(name='genre')
+    async def search_songs_by_genre(self, ctx, *, query):
+    # Modify the query to include the genre or mood
+        query = f'{query} genre'  # Example: "pop genre", "happy mood", etc.
+
+    # Search for songs based on the modified query
+        results = sp.search(q=query, type='track', limit=50)  # Increase the limit to fetch more results
+
+    # Extract the song details from the search results
+        songs = results['tracks']['items']
+        if songs:
+            response = f"Here are some songs related to '{query}':\n"
+            added_artists = set()  # Keep track of added artists
+            count = 0  # Count the number of added songs
+            for song in songs:
+                artists = ', '.join([artist['name'] for artist in song['artists']])
+                if artists not in added_artists:  # Check if artist is already added
+                    response += f" | {song['name']} by {artists} |"
+                    added_artists.add(artists)  # Add artist to the set of added artists
+                    count += 1  # Increment the count
+                if count == 5:  # Stop once you have 5 unique artists
+                    break
+        else:
+            response = f"No songs found for '{query}'."
+
+    # Send the response back to the chat
+        await ctx.send(response)
+
+    """async def event_message(self, message):
+        if message is None or not getattr(message, "author", None):
+            return
+            
+        user_to_track = "tolin_ofc"  # Replace with the username you want to track
+        channel_to_track = "tolin_ofc"  # Replace with the channel name you want to track
+
+        if message.author.name == user_to_track and message.channel.name == channel_to_track:
+            user = message.author.name
+            content = message.content
+            await self.handle_commands(message)  # Process commands
+            await message.channel.send(f'{user} typed: "{content}"')  # Send a response message
+        
+        if message.author.name == "omegalulingsomuch":
             content = message.content.strip()
             if content.lower().startswith("bobthe42"):
                 content = content[len("bobthe42"):].strip()
@@ -352,29 +422,8 @@ class Bot(commands.Bot):
                     self.user_counts[user] = 1
                 else:
                     self.user_counts[user] += 1
-                await self.send_message_to_channel(target_channel, f'Pingl te: ({user} count: {self.user_counts[user]})')
-        if message.author.name == "reformedmartass" and re.search(r'tom.*', message.content, re.IGNORECASE):
-            user = message.author.name
-            target_channel = "omegalulingsomuch"  
-            if user not in self.user_counts:
-                self.user_counts[user] = 1
-            else:
-                self.user_counts[user] += 1
-            await self.send_message_to_channel(target_channel, f'Pingl me: ({user} count: {self.user_counts[user]})')
-        await self.handle_commands(message)"""
+                await self.send_message_to_channel(target_channel, f'Pingl te: ({user} count: {self.user_counts[user]})')"""
 
-    """async def event_message(self, message):
-        user_to_track = "fswref"  # Replace with the username you want to track
-        channel_to_track = "bobthebuilder_98"  # Replace with the channel name you want to track
-
-        if message.author.name == user_to_track and message.channel.name == channel_to_track:
-            user = message.author.name
-            channel_name = message.channel.name
-            content = message.content
-            await self.send_message_to_channel("omegalulingsomuch", f'{user} in {channel_name} typed: "{content}"')
-
-    # Handle other events and commands
-        await self.handle_commands(message)"""
     def metoda_queue(self):
         queue = sp.queue()
         self.queue2 = []
@@ -398,11 +447,8 @@ class Bot(commands.Bot):
         except FileNotFoundError:
             print("prefix.json file not found. Using default prefixes.")
 
-    async def event_message(self, message):
-        await self.handle_commands(message)
-
     async def handle_commands(self, message):
-        await asyncio.sleep(1)
+        await asyncio.sleep(0.5)
         await super().handle_commands(message)
 
     async def send_message_to_channel(self, channel, message):
@@ -411,8 +457,15 @@ class Bot(commands.Bot):
             await target_channel.send(message)
 
     async def event_ready(self):
-        log.info("\n" * 100)
+        log.info("\n" * 5)
         log.info(f"TwitchTunes ({self.version}) Ready, logged in as: {self.nick}")
+    
+    # Replace "omegalulingsomuch" with the ID or name of the channel you want to send the message to
+        channel_id = "omegalulingsomuch"
+        channel = self.get_channel(channel_id)
+    
+        if channel:
+            await channel.send("⚠ pong asd123 ⚠")
 
     def is_owner(self, ctx):
         return ctx.author.name.lower() == "tomwaz"
